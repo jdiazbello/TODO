@@ -12,22 +12,7 @@ namespace PerfectChannel.WebApi.Controllers
     [ApiController]
     public class Task : ControllerBase
     {
-        private static List<TaskTodo> taskList = new List<TaskTodo>{
-            new TaskTodo
-            {
-                name = "TestTaskTODO",
-                completed = false,
-                id = Guid.NewGuid()
-            },
-            new TaskTodo
-            {
-                name = "TestTaskDONE",
-                completed = true,
-                id = Guid.NewGuid()
-            }
-            };
-
-        //private static List<TaskTodo> taskList = new List<TaskTodo>();
+        private static List<TaskTodo> taskList = new List<TaskTodo>();
 
         [HttpGet]
         public List<TaskTodo> Get()
