@@ -1,7 +1,9 @@
 ﻿using Microsoft.AspNetCore.Cors;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace PerfectChannel.WebApi.Controllers
 {
@@ -10,22 +12,22 @@ namespace PerfectChannel.WebApi.Controllers
     [ApiController]
     public class Task : ControllerBase
     {
-        //private static List<TaskTodo> taskList = new List<TaskTodo>{
-        //    new TaskTodo
-        //    {
-        //        name = "TestTaskTODO",
-        //        completed = false,
-        //        id = System.Guid.NewGuid()
-        //    },
-        //    new TaskTodo
-        //    {
-        //        name = "TestTaskDONE",
-        //        completed = true,
-        //        id = System.Guid.NewGuid()
-        //    }
-        //    };
+        private static List<TaskTodo> taskList = new List<TaskTodo>{
+            new TaskTodo
+            {
+                name = "TestTaskTODO",
+                completed = false,
+                id = Guid.NewGuid()
+            },
+            new TaskTodo
+            {
+                name = "TestTaskDONE",
+                completed = true,
+                id = Guid.NewGuid()
+            }
+            };
 
-        private static List<TaskTodo> taskList = new List<TaskTodo>();
+        //private static List<TaskTodo> taskList = new List<TaskTodo>();
 
         [HttpGet]
         public List<TaskTodo> Get()
@@ -48,7 +50,28 @@ namespace PerfectChannel.WebApi.Controllers
             catch (Exception e)
             {
                 Console.WriteLine($"Error:{e.Message}");
-                return StatusCode(500,"Internal Server Error");
+                return StatusCode(StatusCodes.Status500InternalServerError, "Internal Server Error");
+            }
+        }
+
+
+        [HttpPatch]
+        public IActionResult Patch(Guid id, TaskTodo todoTask)
+        {
+            try
+            {
+                var tasktoUpdate = taskList.Where(t => t.id == id).FirstOrDefault();
+
+                if (tasktoUpdate == null)
+                    return NotFound($"Task with Id = {id} not found");
+
+                tasktoUpdate.completed = todoTask.completed;
+                return Ok(tasktoUpdate);
+            }
+            catch (Exception)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError,
+                    "Error updating taskList");
             }
         }
 

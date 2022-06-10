@@ -47,5 +47,31 @@ namespace Task.UnitTests
             var list = _taskController.Get();
             Assert.AreEqual(list.Count, 1);
         }
+
+
+
+        [Test]
+        public void UpdateNotFindTask()
+        {
+            var result = _taskController.Patch(System.Guid.Empty,new TaskTodo { completed = true });
+            result.GetType().ToString();
+            Assert.IsInstanceOf<Microsoft.AspNetCore.Mvc.NotFoundObjectResult>(result);
+        }
+
+        [Test]
+        public void UpdateTask()
+        {
+            var result = _taskController.Post(new TaskTodo { name = "TaskTest" });
+            Assert.IsInstanceOf<Microsoft.AspNetCore.Mvc.OkObjectResult>(result);
+            var list = _taskController.Get();
+            Assert.IsFalse(list[0].completed);
+            
+            var resultUpdate = _taskController.Patch(list[0].id, new TaskTodo { completed = true });
+            Assert.IsInstanceOf<Microsoft.AspNetCore.Mvc.OkObjectResult>(resultUpdate);
+
+            var listUpdate = _taskController.Get();
+            Assert.IsTrue(listUpdate[0].completed);
+        }
+
     }
 }
